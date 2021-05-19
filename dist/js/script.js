@@ -64,7 +64,10 @@
       thisProduct.data = data;
 
       thisProduct.renderInMenu();
+      thisProduct.getElements();
       thisProduct.initAccordion();
+      thisProduct.initOrderForm();
+      thisProduct.processOrder();
     }
 
     // module 7.5
@@ -90,6 +93,16 @@
       console.log('new Product', thisProduct);
     }
 
+    // module 7.6
+    getElements() {
+      const thisProduct = this;
+      // referencje do odpowiednich elementów z daną klasą
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
+      thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
+      thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
+      thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+    }
     // module 7.5
     initAccordion() {
 
@@ -97,11 +110,12 @@
 
       /* find the clickable trigger (the element that should react to clicking) */
 
-      const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      // module 7.6 because of accordionTrigger const clickableTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
 
       /* START: add event listener to clickable trigger on event click */
+      thisProduct.accordionTrigger.addEventListener('click', function (event) {
+        // module 7.6 clickableTrigger.addEventListener('click', function (event) {
 
-      clickableTrigger.addEventListener('click', function (event) {
 
         /* prevent default action for event */
 
@@ -124,6 +138,63 @@
       });
 
     }
+    // MODULE 7.6
+    initOrderForm() {
+      const thisProduct = this;
+      console.log('Method name: initOrderForm');
+
+      thisProduct.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+
+      for (let input of thisProduct.formInputs) {
+        input.addEventListener('change', function () {
+          thisProduct.processOrder();
+        });
+      }
+
+      thisProduct.cartButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+    }
+    // MODULE 7.6
+    processOrder() {
+      const thisProduct = this;
+      console.log('Method name: processOrder');
+
+      // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      console.log('form data:', formData);
+
+      // set price to default price
+      let price = thisProduct.data.price;
+
+      // for every category (param)...
+      for (let paramId in thisProduct.data.params) {
+        // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
+        const param = thisProduct.data.params[paramId];
+        console.log(paramId, param);
+
+        // for every option in this category
+        for (let optionId in param.options) {
+          // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
+          const option = param.options[optionId];
+          console.log(optionId, option);
+
+          // check if optionId of paramId is choosed in formData
+
+
+          // Stay default, Increase or decrease amout of total price
+
+        }
+      }
+
+      // update calculated price in the HTML
+      thisProduct.priceElem.innerHTML = price;
+    }
+
   }
 
   const app = {
