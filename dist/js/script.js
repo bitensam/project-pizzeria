@@ -177,24 +177,34 @@
         const param = thisProduct.data.params[paramId];
         console.log(paramId, param);
 
+        /* EX FROM MODULE 7.6 */
+
         // for every option in this category
         for (let optionId in param.options) {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
           console.log(optionId, option);
 
-          // check if optionId of paramId is choosed in formData
+          // check if there is param with a name of paramId in formData and if it includes optionId
+          if (formData[paramId] && formData[paramId].includes(optionId)) {
+            // check if options are deafult
+            if (!option.default === true) {
+              // add option price to default price
+              price += option.price;
+            }
 
-
-          // Stay default, Increase or decrease amout of total price
-
+          } else {
+            // check if options aren't deafult
+            if (option.default === true) {
+              // subtract option price from default price
+              price -= option.price;
+            }
+          }
         }
       }
-
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
     }
-
   }
 
   const app = {
