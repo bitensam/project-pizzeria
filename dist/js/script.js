@@ -67,6 +67,7 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.initAmountWidget();
       thisProduct.processOrder();
     }
 
@@ -90,7 +91,6 @@
 
       menuContainer.appendChild(thisProduct.element);
 
-      console.log('new Product', thisProduct);
     }
 
     // module 7.6
@@ -103,6 +103,7 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
     // module 7.5
     initAccordion() {
@@ -160,6 +161,14 @@
         thisProduct.processOrder();
       });
     }
+
+    // MODULE 8.1 WIDGET METHOD
+    initAmountWidget() {
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+    }
+
     // MODULE 7.6
     processOrder() {
       const thisProduct = this;
@@ -167,7 +176,7 @@
 
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('form data:', formData);
+
 
       // set price to default price
       let price = thisProduct.data.price;
@@ -176,7 +185,7 @@
       for (let paramId in thisProduct.data.params) {
         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
         const param = thisProduct.data.params[paramId];
-        console.log(paramId, param);
+
 
         /* EX FROM MODULE 7.6 */
 
@@ -184,7 +193,7 @@
         for (let optionId in param.options) {
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId];
-          console.log(optionId, option);
+
 
           // check if there is param with a name of paramId in formData and if it includes optionId
           if (formData[paramId] && formData[paramId].includes(optionId)) {
@@ -226,6 +235,74 @@
       }
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
+    }
+  }
+
+  // MODULE 8.1 - amountWidget
+
+  class AmountWidget {
+    constructor(element) {
+      const thisWidget = this;
+
+      // wywołania w konstruktorze
+
+      thisWidget.getElements(element);
+      thisWidget.setValue(thisWidget.input.value);
+      thisWidget.initActions();
+
+
+      console.log('thisWidget:', thisWidget);
+      console.log('constructor arguments:', element);
+    }
+
+    getElements(element) {
+      const thisWidget = this;
+
+      // referencje do odpowiednich elementów z daną klasą
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+    // funkcja pośrednik
+    setValue(value) {
+
+      const thisWidget = this;
+
+      const newValue = parseInt(value);
+
+      /* TODO: Add validation */
+
+      // sprawdza czy wpisana wartosc jest inna niz obecnie, oraz czy nie niest równa null
+      if (thisWidget.value !== newValue && !isNaN(newValue)) {
+        thisWidget.value = newValue;
+        thisWidget.input.value = thisWidget.value;
+      }
+
+    }
+
+    // MODUL 8.1
+    initActions() {
+      const thisWidget = this;
+
+
+      // zmiana wartosci
+      thisWidget.input.addEventListener('change', function () {
+        thisWidget.setValue(thisWidget.input.value);
+      });
+
+      // przycisk odejmujący
+      thisWidget.linkDecrease.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value - 1);
+      });
+
+      // przycik dodający
+      thisWidget.linkIncrease.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.setValue(thisWidget.value + 1);
+      });
     }
   }
 
