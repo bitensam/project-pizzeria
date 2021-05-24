@@ -167,6 +167,10 @@
       const thisProduct = this;
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+
+      thisProduct.amountWidgetElem.addEventListener('updated', function () {
+        thisProduct.processOrder();
+      });
     }
 
     // MODULE 7.6
@@ -233,6 +237,10 @@
           }
         }
       }
+      // multiply price by amount
+
+      price *= thisProduct.amountWidget.value;
+
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
     }
@@ -276,10 +284,22 @@
 
       // sprawdza czy wpisana wartosc jest inna niz obecnie, oraz czy nie niest równa null
       if (thisWidget.value !== newValue && !isNaN(newValue) && settings.amountWidget.defaultMin <= newValue && settings.amountWidget.defaultMax >= newValue) {
-        thisWidget.value = newValue;
-        thisWidget.input.value = thisWidget.value;
-      }
 
+        thisWidget.value = newValue;
+
+        thisWidget.announce();
+
+        thisWidget.input.value = thisWidget.value;
+
+      }
+    }
+
+    // MODUL 8.1
+    announce() {
+      const thisWidget = this;
+
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
     }
 
     // MODUL 8.1
