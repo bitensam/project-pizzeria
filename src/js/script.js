@@ -275,7 +275,7 @@
       /* TODO: Add validation */
 
       // sprawdza czy wpisana wartosc jest inna niz obecnie, oraz czy nie niest równa null
-      if (thisWidget.value !== newValue && !isNaN(newValue)) {
+      if (thisWidget.value !== newValue && !isNaN(newValue) && settings.amountWidget.defaultMin <= newValue && settings.amountWidget.defaultMax >= newValue) {
         thisWidget.value = newValue;
         thisWidget.input.value = thisWidget.value;
       }
