@@ -353,7 +353,48 @@
     }
   }
 
+  // MODULE 8.3
+  class Cart {
+    constructor(element) {
+      const thisCart = this;
+
+      thisCart.product = [];
+
+      // wywołania metod w konstruktorze
+
+      thisCart.getElements(element);
+      thisCart.initActions();
+
+      console.log('new cart', thisCart);
+    }
+
+    getElements(element) {
+      const thisCart = this;
+
+      thisCart.dom = {};
+
+      // referencje do odpowiednich elementów
+
+      thisCart.dom.wrapper = element;
+
+      thisCart.dom.toggleTrigger = element.querySelector(select.cart.toggleTrigger);
+    }
+
+    initActions() {
+
+      const thisCart = this;
+
+      // funkcja powodująca, ze po kliknieciu rozwija się okienko koszyka
+
+      thisCart.dom.toggleTrigger.addEventListener('click', function () {
+
+        thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
+      });
+    }
+  }
+
   const app = {
+
     initMenu: function () {
 
       const thisApp = this;
@@ -364,6 +405,7 @@
         new Product(productData, thisApp.data.products[productData]);
       }
     },
+
     init: function () {
       const thisApp = this;
       console.log('*** App starting ***');
@@ -374,12 +416,27 @@
 
       thisApp.initData();
       thisApp.initMenu();
+      thisApp.initCart();
     },
+
     initData: function () {
       const thisApp = this;
 
       thisApp.data = dataSource;
     },
+
+    // MODULE 8.1 - init of cart instance
+
+    initCart: function () {
+      const thisApp = this;
+
+      const cartElem = document.querySelector(select.containerOf.cart);
+
+      thisApp.cart = new Cart(cartElem);
+    }
+
   };
+
   app.init();
+
 }
