@@ -170,7 +170,6 @@
     // MODULE 7.6
     initOrderForm() {
       const thisProduct = this;
-      console.log('Method name: initOrderForm');
 
       thisProduct.form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -204,7 +203,6 @@
     // MODULE 7.6
     processOrder() {
       const thisProduct = this;
-      console.log('Method name: processOrder');
 
       // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
@@ -350,9 +348,6 @@
       thisWidget.setValue(thisWidget.input.value || settings.amountWidget.defaultValue);
       thisWidget.initActions();
 
-
-      console.log('thisWidget:', thisWidget);
-      console.log('constructor arguments:', element);
     }
 
     getElements(element) {
@@ -390,7 +385,10 @@
     announce() {
       const thisWidget = this;
 
-      const event = new Event('updated');
+      /* MODUL 8.5 bąbelkowanie propagacja - przekazywanie emitowania eventu na rodzica dziadka itd */
+      const event = new CustomEvent('updated', {
+        bubbles: true
+      });
       thisWidget.element.dispatchEvent(event);
     }
 
@@ -429,7 +427,6 @@
       thisCart.getElements(element);
       thisCart.initActions();
 
-      console.log('new cart', thisCart);
     }
 
     getElements(element) {
@@ -444,6 +441,16 @@
       thisCart.dom.toggleTrigger = element.querySelector(select.cart.toggleTrigger);
 
       thisCart.dom.productList = element.querySelector(select.cart.productList);
+
+      // 8.5 Wyświetlanie aktualnych sum w koszyku
+
+      thisCart.dom.deliveryFee = element.querySelector(select.cart.deliveryFee);
+
+      thisCart.dom.subTotalPrice = element.querySelector(select.cart.subtotalPrice);
+
+      thisCart.dom.totalPrice = element.querySelectorAll(select.cart.totalPrice);
+
+      thisCart.dom.totalNumber = element.querySelector(select.cart.totalNumber);
     }
 
     initActions() {
@@ -456,6 +463,12 @@
 
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+
+      // 8.5 nasłuchiwacz dla widgetu zmianu ilosci w koszyku
+
+      thisCart.dom.productList.addEventListener('updated', function () {
+        thisCart.update();
+      });
     }
 
     // MODULE 8.4 - ADD PRODUCT TO CART
@@ -463,8 +476,6 @@
     add(menuProduct) {
 
       const thisCart = this;
-
-      console.log('product added:', menuProduct);
 
       const generatedHTML = templates.cartProduct(menuProduct);
 
@@ -476,8 +487,59 @@
 
       thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
 
-      console.log('thisCart.products:', thisCart.products);
+      thisCart.update();
+
     }
+
+    // MODULE 8.5 EX. SUMOWANIE KOSZYKA
+
+    update() {
+      const thisCart = this;
+
+      thisCart.deliveryFee = settings.cart.defaultDeliveryFee;
+
+      console.log('deliveryFee', thisCart.deliveryFee);
+
+      thisCart.totalNumber = 0;
+
+      thisCart.subTotalPrice = 0;
+
+      // LOOP START: increasing totalNumber of products and subTotalPrice */
+      for (let product of thisCart.products) {
+
+        thisCart.totalNumber = thisCart.totalNumber + product.amount;
+
+        thisCart.subTotalPrice = thisCart.subTotalPrice + product.price;
+
+      }
+      // END LOOP
+
+      if (!thisCart.totalNumber == 0) {
+
+        thisCart.totalPrice = thisCart.subTotalPrice + thisCart.deliveryFee;
+
+        thisCart.dom.deliveryFee.innerHTML = thisCart.deliveryFee;
+
+
+      } else if (thisCart.totalNumber == 0) {
+        thisCart.totalPrice = 0;
+        thisCart.dom.deliveryFee.innerHTML = 0;
+
+      }
+
+
+      thisCart.dom.totalNumber.innerHTML = thisCart.totalNumber;
+      thisCart.dom.subTotalPrice.innerHTML = thisCart.subTotalPrice;
+
+      for (let priceSum of thisCart.dom.totalPrice) {
+        priceSum.innerHTML = thisCart.totalPrice;
+      }
+
+
+      console.log('totalNumber:', thisCart.totalNumber);
+      console.log('subTotalPrice:', thisCart.subTotalPrice);
+    }
+
   }
 
   // MODULE 8.5 CREATE CLASS CartProduct
@@ -500,7 +562,6 @@
       thisCartProduct.getElements(element);
       thisCartProduct.initAmountWidget();
 
-      console.log('thisCartProduct:', thisCartProduct);
 
     }
 
@@ -530,6 +591,20 @@
         thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
       });
     }
+
+    // MODULE 8.6 - REMOVE FROM CART
+
+    remove() {
+      const thisCartProduct = this;
+
+      const event = new CustomEvent('remove', {
+        bubbles: true,
+        detail: {
+          cartProduct: thisCartProduct,
+        }
+
+      });
+    }
   }
 
   const app = {
@@ -537,8 +612,6 @@
     initMenu: function () {
 
       const thisApp = this;
-
-      console.log('thisApp.data', thisApp.data);
 
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
