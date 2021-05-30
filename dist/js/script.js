@@ -278,20 +278,12 @@
       thisProduct.priceElem.innerHTML = price;
     }
 
-    // MODULE 8.4 - ADD PRODUCT TO CART
-    addToCart() {
-      const thisProduct = this;
-
-      app.cart.add(thisProduct.prepareCartProduct());
-    }
-
     // MODULE 8.4 - ADD NEW PRODUCT OBJECT PREPARED TO GET TO THE CART
     prepareCartProduct() {
       const thisProduct = this;
 
       // this is product object with only nescesery info to get to cart
       const productSummary = {
-
         id: thisProduct.id,
         name: thisProduct.data.name,
         amount: thisProduct.amountWidget.value,
@@ -335,8 +327,14 @@
           }
         }
       }
-
       return params;
+    }
+
+    // MODULE 8.4 - ADD PRODUCT TO CART
+    addToCart() {
+      const thisProduct = this;
+
+      app.cart.add(thisProduct.prepareCartProduct());
     }
   }
 
@@ -423,12 +421,11 @@
   // MODULE 8.3
   class Cart {
     constructor(element) {
-      const thisCart = this;
 
+      const thisCart = this;
       thisCart.product = [];
 
       // wywołania metod w konstruktorze
-
       thisCart.getElements(element);
       thisCart.initActions();
 
@@ -446,7 +443,7 @@
 
       thisCart.dom.toggleTrigger = element.querySelector(select.cart.toggleTrigger);
 
-      thisCart.dom.productList = element.querySelector(select.productList);
+      thisCart.dom.productList = element.querySelector(select.cart.productList);
     }
 
     initActions() {
@@ -464,9 +461,15 @@
     // MODULE 8.4 - ADD PRODUCT TO CART
 
     add(menuProduct) {
+
       const thisCart = this;
+
+      console.log('product added:', menuProduct);
+
       const generatedHTML = templates.cartProduct(menuProduct);
+
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
+
       thisCart.dom.productList.appendChild(generatedDOM);
     }
   }
