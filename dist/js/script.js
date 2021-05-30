@@ -423,7 +423,7 @@
     constructor(element) {
 
       const thisCart = this;
-      thisCart.product = [];
+      thisCart.products = [];
 
       // wywołania metod w konstruktorze
       thisCart.getElements(element);
@@ -471,6 +471,64 @@
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
 
       thisCart.dom.productList.appendChild(generatedDOM);
+
+      // MODULE 8.5 ADD INFO ABOUT PRODUCT ADDED TO CART IN PRODUCT ARRAY
+
+      thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
+
+      console.log('thisCart.products:', thisCart.products);
+    }
+  }
+
+  // MODULE 8.5 CREATE CLASS CartProduct
+
+  class CartProduct {
+    constructor(menuProduct, element) {
+      const thisCartProduct = this;
+
+      /* Zapisanie wszystkich właściwośći z argumentu menuProduct i przypisanie do pojedyńczych właściwości */
+
+      thisCartProduct.id = menuProduct.id;
+      thisCartProduct.name = menuProduct.name;
+      thisCartProduct.amount = menuProduct.amount;
+      thisCartProduct.priceSingle = menuProduct.priceSingle;
+      thisCartProduct.price = menuProduct.price;
+      thisCartProduct.params = menuProduct.params;
+
+      // wywyołanie metody getElements z argumentem element
+
+      thisCartProduct.getElements(element);
+      thisCartProduct.initAmountWidget();
+
+      console.log('thisCartProduct:', thisCartProduct);
+
+    }
+
+    // MODULE 8.5 EX.2
+    getElements(element) {
+      const thisCartProduct = this;
+
+      thisCartProduct.dom = {};
+
+      thisCartProduct.dom.wrapper = element;
+
+      thisCartProduct.dom.amountWidget = element.querySelector(select.cartProduct.amountWidget);
+      thisCartProduct.dom.price = element.querySelector(select.cartProduct.price);
+      thisCartProduct.dom.edit = element.querySelector(select.cartProduct.edit);
+      thisCartProduct.dom.remove = element.querySelector(select.cartProduct.remove);
+
+    }
+
+    initAmountWidget() {
+      const thisCartProduct = this;
+
+      thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget);
+
+      thisCartProduct.dom.amountWidget.addEventListener('updated', function () {
+        thisCartProduct.amount = thisCartProduct.amountWidget.value;
+        thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
+        thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      });
     }
   }
 
