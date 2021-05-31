@@ -469,7 +469,13 @@
       thisCart.dom.productList.addEventListener('updated', function () {
         thisCart.update();
       });
+
+      // 8.6
+      thisCart.dom.productList.addEventListener('remove', function (event) {
+        thisCart.remove(event.detail.cartProduct);
+      });
     }
+
 
     // MODULE 8.4 - ADD PRODUCT TO CART
 
@@ -490,6 +496,22 @@
       thisCart.update();
 
     }
+
+    // 8.6 ZADANIE
+    remove(CartProduct) {
+      const thisCart = this;
+
+      const indexOfProduct = thisCart.products.indexOf(CartProduct);
+
+      thisCart.products.splice(indexOfProduct, 1);
+
+      CartProduct.dom.wrapper.remove();
+
+      thisCart.update();
+
+      console.log('dzialam2');
+    }
+
 
     // MODULE 8.5 EX. SUMOWANIE KOSZYKA
 
@@ -561,6 +583,7 @@
 
       thisCartProduct.getElements(element);
       thisCartProduct.initAmountWidget();
+      thisCartProduct.initActions();
 
 
     }
@@ -604,6 +627,26 @@
         }
 
       });
+      console.log('dzialam');
+      thisCartProduct.dom.wrapper.dispatchEvent(event);
+    }
+
+    // 8.6
+
+    initActions() {
+      const thisCartProduct = this;
+
+      thisCartProduct.dom.edit.addEventListener('click', function (event) {
+        event.preventDefault();
+      });
+
+      thisCartProduct.dom.remove.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        thisCartProduct.remove();
+      });
+
+
     }
   }
 
