@@ -456,6 +456,13 @@
       thisCart.dom.totalPrice = element.querySelectorAll(select.cart.totalPrice);
 
       thisCart.dom.totalNumber = element.querySelector(select.cart.totalNumber);
+
+      // 8.9
+      thisCart.dom.form = element.querySelector(select.cart.form);
+
+      thisCart.dom.phone = element.querySelector(select.cart.phone);
+
+      thisCart.dom.address = element.querySelector(select.cart.address);
     }
 
     initActions() {
@@ -479,8 +486,49 @@
       thisCart.dom.productList.addEventListener('remove', function (event) {
         thisCart.remove(event.detail.cartProduct);
       });
+
+      // 8.9
+
+      thisCart.dom.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisCart.sendOrder();
+      });
     }
 
+    // MODULE 8.9 - SEND ORDER METHOD
+
+    sendOrder() {
+      const thisCart = this;
+
+      // ENDPOINT ADRESS http://localhost:3131/orders
+      const url = settings.db.url + '/' + settings.db.orders;
+
+      const payload = {
+        address: thisCart.dom.address.value,
+        phone: thisCart.dom.phone.value,
+        totalPrice: thisCart.totalPrice,
+        subTotalPrice: thisCart.subTotalPrice,
+        totalNumber: thisCart.totalNumber,
+        deliveryFee: thisCart.deliveryFee,
+        products: [],
+      };
+
+      for (let prod of thisCart.products) {
+        payload.products.push(prod.getData());
+      }
+
+      // wysyłka danych
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      };
+
+      fetch(url, options);
+
+    }
 
     // MODULE 8.4 - ADD PRODUCT TO CART
 
@@ -618,6 +666,22 @@
         thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
         thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
       });
+    }
+
+    // MODULE 8.9 - getData
+
+    getData() {
+      const thisCartProduct = this;
+
+      const data = {
+        id: thisCartProduct.id,
+        amount: thisCartProduct.amount,
+        price: thisCartProduct.price,
+        priceSingle: thisCartProduct.priceSingle,
+        name: thisCartProduct.name,
+        params: thisCartProduct.params,
+      };
+      return data;
     }
 
     // MODULE 8.6 - REMOVE FROM CART
