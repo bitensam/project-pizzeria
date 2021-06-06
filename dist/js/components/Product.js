@@ -256,10 +256,13 @@ class Product {
 
     // app.cart.add(thisProduct.prepareCartProduct());
 
+    //thisProduct.name = thisProduct.data.name;
+    //thisProduct.amount = thisProduct.amountWidget.value;
+
     const event = new CustomEvent('add-to-cart', {
       bubbles: true,
       detail: {
-        product: thisProduct,
+        product: thisProduct.prepareCartProduct(),
       }
     });
 

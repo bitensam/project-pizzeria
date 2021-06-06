@@ -1,7 +1,7 @@
 import { settings, select, classNames, templates } from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
-// import CartProduct from './components/CartProduct.js';
+
 
 
 const app = {
