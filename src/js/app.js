@@ -6,6 +6,40 @@ import Cart from './components/Cart.js';
 
 const app = {
 
+  initPages: function () {
+
+    const thisApp = this;
+
+    thisApp.pages = document.querySelector(select.containerOf.pages).children;
+    thisApp.navLinks = document.querySelectorAll(select.nav.links);
+
+    thisApp.activatePage(thisApp.pages[0].id);
+
+  },
+
+  activatePage: function (pageId) {
+    const thisApp = this;
+
+    // add class 'active' to matching page and remove 'active' from non matching
+
+    for (let page of thisApp.pages) {
+      /*if(page.id == pageId){
+        page.classList.add(classNames.pages.active);
+      } else {
+        page.classList.remove(classNames.pages.active);
+      }*/
+      page.classList.toggle(classNames.pages.active, page.id == pageId); // to samo co ten if na gorze
+    }
+
+    // add class 'active' to matching link and remove 'active' from non matching
+
+    for (let link of thisApp.navLinks) {
+      link.classList.toggle(
+        classNames.nav.active,
+        link.getAttribute('href') == '#' + pageId);
+    }
+  },
+
   initMenu: function () {
 
     const thisApp = this;
@@ -13,18 +47,6 @@ const app = {
     for (let productData in thisApp.data.products) {
       new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
     }
-  },
-
-  init: function () {
-    const thisApp = this;
-    console.log('*** App starting ***');
-    console.log('thisApp:', thisApp);
-    console.log('classNames:', classNames);
-    console.log('settings:', settings);
-    console.log('templates:', templates);
-
-    thisApp.initData();
-    thisApp.initCart();
   },
 
   initData: function () {
@@ -67,7 +89,21 @@ const app = {
     thisApp.productList.addEventListener('add-to-cart', function (event) {
       app.cart.add(event.detail.product);
     });
-  }
+  },
+
+  init: function () {
+    const thisApp = this;
+    console.log('*** App starting ***');
+    console.log('thisApp:', thisApp);
+    console.log('classNames:', classNames);
+    console.log('settings:', settings);
+    console.log('templates:', templates);
+
+    thisApp.initPages();
+    thisApp.initData();
+    thisApp.initCart();
+
+  },
 };
 
 app.init();

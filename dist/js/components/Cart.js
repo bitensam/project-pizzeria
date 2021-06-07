@@ -91,12 +91,13 @@ class Cart {
       subTotalPrice: thisCart.subTotalPrice,
       totalNumber: thisCart.totalNumber,
       deliveryFee: thisCart.deliveryFee,
-      products: [],
+      //products: [],
+      products: thisCart.products.map(product => product.getData())
     };
 
-    for (let prod of thisCart.products) {
+    /*for (let prod of thisCart.products) {
       payload.products.push(prod.getData());
-    }
+    }*/
 
     // wysyłka danych
     const options = {

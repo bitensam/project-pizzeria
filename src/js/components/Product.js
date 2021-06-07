@@ -167,7 +167,8 @@ class Product {
         }
 
         // find image with class: .paramId-optionId in thisProduct.imageWrapper
-        const activeImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+        //const activeImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+        const activeImage = thisProduct.imageWrapper.querySelector(`.${paramId}-${optionId}`);
 
         // check if was found, if yes check optionId
         if (activeImage) {
