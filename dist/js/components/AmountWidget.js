@@ -1,58 +1,40 @@
 import { settings, select } from '../settings.js';
+import BaseWidget from './BaseWidget.js';
 // MODULE 8.1 - amountWidget
 
-class AmountWidget {
+class AmountWidget extends BaseWidget {
   constructor(element) {
+    super(element, settings.amountWidget.defaultValue);
     const thisWidget = this;
 
     // wywołania w konstruktorze
 
     thisWidget.getElements(element);
-    thisWidget.setValue(thisWidget.input.value || settings.amountWidget.defaultValue);
+    //thisWidget.setValue(thisWidget.dom.input.value || settings.amountWidget.defaultValue);
     thisWidget.initActions();
 
   }
 
-  getElements(element) {
+  getElements() {
     const thisWidget = this;
 
     // referencje do odpowiednich elementów z daną klasą
-    thisWidget.element = element;
-    thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
-    thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
-    thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    //thisWidget.dom.wrapper = element;
+    thisWidget.dom.input = thisWidget.dom.wrapper.querySelector(select.widgets.amount.input);
+    thisWidget.dom.linkDecrease = thisWidget.dom.wrapper.querySelector(select.widgets.amount.linkDecrease);
+    thisWidget.dom.linkIncrease = thisWidget.dom.wrapper.querySelector(select.widgets.amount.linkIncrease);
   }
 
-  // funkcja pośrednik
-  setValue(value) {
-
-    const thisWidget = this;
-
-    const newValue = parseInt(value);
-
-    /* TODO: Add validation */
-
-    // sprawdza czy wpisana wartosc jest inna niz obecnie, oraz czy nie niest równa null
-    if (thisWidget.value !== newValue && !isNaN(newValue) && settings.amountWidget.defaultMin <= newValue && settings.amountWidget.defaultMax >= newValue) {
-
-      thisWidget.value = newValue;
-
-      thisWidget.announce();
-
-      thisWidget.input.value = thisWidget.value;
-
-    }
+  isValid(value) {
+    return !isNaN(value)
+      && settings.amountWidget.defaultMin <= value
+      && settings.amountWidget.defaultMax >= value;
   }
 
-  // MODUL 8.1
-  announce() {
+  renderValue() {
     const thisWidget = this;
 
-    /* MODUL 8.5 bąbelkowanie propagacja - przekazywanie emitowania eventu na rodzica dziadka itd */
-    const event = new CustomEvent('updated', {
-      bubbles: true
-    });
-    thisWidget.element.dispatchEvent(event);
+    thisWidget.dom.input.value = thisWidget.correctValue;
   }
 
   // MODUL 8.1
@@ -61,20 +43,20 @@ class AmountWidget {
 
 
     // zmiana wartosci
-    thisWidget.input.addEventListener('change', function () {
-      thisWidget.setValue(thisWidget.input.value);
+    thisWidget.dom.input.addEventListener('change', function () {
+      thisWidget.setValue(thisWidget.dom.input.value);
     });
 
     // przycisk odejmujący
-    thisWidget.linkDecrease.addEventListener('click', function (event) {
+    thisWidget.dom.linkDecrease.addEventListener('click', function (event) {
       event.preventDefault();
-      thisWidget.setValue(thisWidget.value - 1);
+      thisWidget.setValue(thisWidget.correctValue - 1);
     });
 
     // przycik dodający
-    thisWidget.linkIncrease.addEventListener('click', function (event) {
+    thisWidget.dom.linkIncrease.addEventListener('click', function (event) {
       event.preventDefault();
-      thisWidget.setValue(thisWidget.value + 1);
+      thisWidget.setValue(thisWidget.correctValue + 1);
     });
   }
 }
