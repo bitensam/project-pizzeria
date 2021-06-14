@@ -79,7 +79,6 @@ class CartProduct {
       }
 
     });
-    console.log('dzialam');
     thisCartProduct.dom.wrapper.dispatchEvent(event);
   }
 

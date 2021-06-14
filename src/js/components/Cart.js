@@ -144,7 +144,6 @@ class Cart {
 
     thisCart.update();
 
-    console.log('dzialam2');
   }
 
 
@@ -154,8 +153,6 @@ class Cart {
     const thisCart = this;
 
     thisCart.deliveryFee = settings.cart.defaultDeliveryFee;
-
-    console.log('deliveryFee', thisCart.deliveryFee);
 
     thisCart.totalNumber = 0;
 
@@ -191,10 +188,6 @@ class Cart {
     for (let priceSum of thisCart.dom.totalPrice) {
       priceSum.innerHTML = thisCart.totalPrice;
     }
-
-
-    console.log('totalNumber:', thisCart.totalNumber);
-    console.log('subTotalPrice:', thisCart.subTotalPrice);
   }
 
 }
