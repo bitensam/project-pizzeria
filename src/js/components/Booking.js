@@ -150,6 +150,47 @@ class Booking {
       }
     }
   }
+
+  sendBooking() {
+    const thisBooking = this;
+
+
+    // ENDPOINT ADRESS http://localhost:3131/bookings
+    const url = settings.db.url + '/' + settings.db.bookings;
+
+    const bookingLoad = {
+      date: thisBooking.dom.datePicker.value,
+      hour: thisBooking.dom.hourPicker.value,
+      table: parseInt(thisBooking.tableSelectedData),
+      duration: thisBooking.hoursAmountWidget.value,
+      ppl: thisBooking.peopleAmountWidget.value,
+      starters: {},
+      phone: thisBooking.dom.phone.value,
+      address: thisBooking.dom.address.value,
+    };
+
+
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bookingLoad),
+    };
+
+    fetch(url, options)
+      .then(function (response) {
+        return response.json();
+      }).then(function (parsedResponse) {
+        //console.log('parsedResponse', parsedResponse);
+
+        thisBooking.booked = parsedResponse;
+        //console.log(thisBooking.booked);
+      });
+  }
+
+
   render(bookingWidgetElement) {
     const thisBooking = this;
 
@@ -163,12 +204,21 @@ class Booking {
     thisBooking.dom.hourPicker = document.querySelector(select.widgets.hourPicker.wrapper);
     thisBooking.dom.tables = document.querySelectorAll(select.booking.tables);
     thisBooking.dom.floorPlan = document.querySelector(select.booking.floorPlan);
+    thisBooking.dom.bookingSubmit = document.querySelector(select.booking.submit);
+    thisBooking.dom.phone = document.querySelector(select.booking.phone);
+    thisBooking.dom.address = document.querySelector(select.booking.address);
+    thisBooking.dom.startersCheckbox = document.querySelector(select.booking.startersCheckbox);
+    thisBooking.dom.starters = [];
+
+
+
   }
 
 
 
   initWidgets() {
     const thisBooking = this;
+
 
     thisBooking.peopleAmountWidget = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.hoursAmountWidget = new AmountWidget(thisBooking.dom.hoursAmount);
@@ -209,6 +259,37 @@ class Booking {
 
       }
 
+    });
+
+    thisBooking.dom.startersCheckbox.addEventListener('click', function (event) {
+      //event.preventDefault();
+
+      const clickedCheckbox = event.target;
+
+      if (clickedCheckbox.type === 'checkbox' && clickedCheckbox.name === 'starter') {
+        //console.log('clickedCheckbox:', clickedCheckbox.value);
+
+
+        if (clickedCheckbox.checked) {
+          // add starters checkbox value to starters array
+          thisBooking.dom.starters.push(clickedCheckbox.value);
+
+        } else {
+          // find index of removing starters checkbox
+          const bookingStarterIndex = thisBooking.dom.starters.indexOf(clickedCheckbox);
+          // remove starters checkbox value from starters array
+          thisBooking.dom.starters.splice(bookingStarterIndex, 1);
+        }
+
+        //console.log(thisBooking.dom.starters);
+      }
+
+    });
+
+    thisBooking.dom.bookingSubmit.addEventListener('click', function (event) {
+      event.preventDefault();
+
+      thisBooking.sendBooking();
     });
   }
 
