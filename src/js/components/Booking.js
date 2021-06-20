@@ -290,6 +290,7 @@ class Booking {
       event.preventDefault();
 
       thisBooking.sendBooking();
+      alert('Congrats, your booking was succesful !');
     });
   }
 

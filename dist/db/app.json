@@ -202,45 +202,7 @@
       }
     }
   ],
-  "orders": [
-    {
-      "address": "",
-      "phone": "",
-      "totalPrice": 38,
-      "subTotalPrice": 18,
-      "totalNumber": 2,
-      "deliveryFee": 20,
-      "products": [
-        {
-          "id": "cake",
-          "amount": 1,
-          "price": 9,
-          "priceSingle": 9,
-          "name": "Zio Stefano's Doughnut",
-          "params": {}
-        },
-        {
-          "id": "salad",
-          "amount": 1,
-          "price": 9,
-          "priceSingle": 9,
-          "name": "Nonno Alberto's Salad",
-          "params": {
-            "ingredients": {
-              "label": "Ingredients",
-              "options": {
-                "cucumber": "Cucumber",
-                "tomatoes": "Tomatoes",
-                "olives": "Olives",
-                "herbs": "Fresh herbs"
-              }
-            }
-          }
-        }
-      ],
-      "id": 1
-    }
-  ],
+  "orders": [],
   "events": [
     {
       "id": 1,
@@ -301,15 +263,5 @@
       ]
     }
   ],
-  "bookings": [
-    {
-      "table": 1,
-      "duration": 2,
-      "ppl": 3,
-      "starters": {},
-      "phone": "77777777",
-      "address": "LOLOLOWA",
-      "id": 1
-    }
-  ]
+  "bookings": []
 }

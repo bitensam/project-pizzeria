@@ -72,6 +72,7 @@ class Cart {
 
     thisCart.dom.form.addEventListener('submit', function (event) {
       event.preventDefault();
+      alert('Congrats, your order was succesful ! Our driver will be at the spot in 30 minutes.');
       thisCart.sendOrder();
     });
   }
